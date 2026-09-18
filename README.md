@@ -25,7 +25,7 @@ That work taught me the hard part is almost never the query. It is that the answ
 -  a join that silently duplicates rows, which nobody catches until a total is reconciled against finance
 
 This repository handles all three explicitly rather than assuming them away. The Type 2 member dimension keeps point-in-time attribution correct. Every figure is anchored to a stated valuation date, so a number can be reproduced as at a specific close. The reconciliation tests tie counts and dollars from raw through to both fact grains. That third one is not hypothetical: the reconciliation test in this repo caught exactly that bug during development, and the fix is commented in place at sql/02_marts/02_facts.sql.
-```
+
 ---
 
 ## Data
