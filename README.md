@@ -16,14 +16,15 @@ python run.py --report                        # ~5s: build, test, print
 
 ## Why this problem
 
-I work on Medicaid claims reporting, and the mistakes that cost the most are rarely exotic. They are:
+I work in Medicaid claims reporting. A large part of my job is answering questions from regulators about claims paid years ago: everything paid to a particular provider, or every claim tied to a specific dispute, sometimes reaching back a decade. I pull those from historical claims data in Athena.
 
-- treating an immature month's paid total as if it were final, and reporting a cost trend that is really just an artifact of lag
-- computing PMPM against a headcount instead of member months, which quietly rewards plans with heavy churn
-- a fan-out join that silently doubles a measure, discovered a quarter later by someone reconciling to finance
+That work taught me the hard part is almost never the query. It is that the answer has to be right about a moment in the past, and it has to be the same answer when someone asks again next year. Three things break that:
 
-This repository is built so that each of those three is handled explicitly and tested against, rather than assumed away. The third one is not hypothetical: the reconciliation test in this repo caught exactly that bug during development, and the fix is commented in place at `sql/02_marts/02_facts.sql`.
+-  a provider or member whose details have changed since the claim was paid, attributed to who they are today rather than who they were on the service date
+-  a paid total treated as final when later adjustments and reversals have moved it, so the same question asked twice returns two different numbers
+-  join that silently duplicates rows, which nobody catches until a total is reconciled against finance
 
+This repository handles all three explicitly rather than assuming them away. The Type 2 member dimension keeps point-in-time attribution correct. Every figure is anchored to a stated valuation date, so a number can be reproduced as at a specific close. The reconciliation tests tie counts and dollars from raw through to both fact grains. That third one is not hypothetical: the reconciliation test in this repo caught exactly that bug during development, and the fix is commented in place at sql/02_marts/02_facts.sql
 ---
 
 ## Data
