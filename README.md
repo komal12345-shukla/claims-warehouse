@@ -20,11 +20,12 @@ I work in Medicaid claims reporting. A large part of my job is answering questio
 
 That work taught me the hard part is almost never the query. It is that the answer has to be right about a moment in the past, and it has to be the same answer when someone asks again next year. Three things break that:
 
--  a provider or member whose details have changed since the claim was paid, attributed to who they are today rather than who they were on the service date
--  a paid total treated as final when later adjustments and reversals have moved it, so the same question asked twice returns two different numbers
--  join that silently duplicates rows, which nobody catches until a total is reconciled against finance
+a provider or member whose details have changed since the claim was paid, attributed to who they are today rather than who they were on the service date
+a paid total treated as final when later adjustments and reversals have moved it, so the same question asked twice returns two different numbers
+a join that silently duplicates rows, which nobody catches until a total is reconciled against finance
 
-This repository handles all three explicitly rather than assuming them away. The Type 2 member dimension keeps point-in-time attribution correct. Every figure is anchored to a stated valuation date, so a number can be reproduced as at a specific close. The reconciliation tests tie counts and dollars from raw through to both fact grains. That third one is not hypothetical: the reconciliation test in this repo caught exactly that bug during development, and the fix is commented in place at sql/02_marts/02_facts.sql
+This repository handles all three explicitly rather than assuming them away. The Type 2 member dimension keeps point-in-time attribution correct. Every figure is anchored to a stated valuation date, so a number can be reproduced as at a specific close. The reconciliation tests tie counts and dollars from raw through to both fact grains. That third one is not hypothetical: the reconciliation test in this repo caught exactly that bug during development, and the fix is commented in place at sql/02_marts/02_facts.sql.
+```
 ---
 
 ## Data
